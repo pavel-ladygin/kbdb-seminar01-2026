@@ -50,7 +50,12 @@ group by u.id, u.model;
 -- ---------------------------------------------------------------------
 -- Задача 3
 
-
+select u.id, round(AVG(t.value ), 1)
+from unit u 
+join sensor s on u.id = s.unit_id
+join telemetry t on s.id = t.sensor_id
+where s.kind = 'temp'
+group by u.id;
 
 -- ---------------------------------------------------------------------
 -- Задача 4. Датчики температуры с максимумом > 85
@@ -58,7 +63,12 @@ group by u.id, u.model;
 -- ---------------------------------------------------------------------
 -- Задача 4
 
-
+select s.id, s.kind, max(t.value)
+from sensor s 
+join telemetry t on t.sensor_id = s.id 
+where s.kind = 'temp'
+group by s.id
+having max(t.value ) >= 85;
 
 -- ---------------------------------------------------------------------
 -- Задача 5. Почасовой профиль температуры подшипника GPA-2
