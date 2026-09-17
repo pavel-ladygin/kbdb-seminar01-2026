@@ -76,6 +76,13 @@ having max(t.value ) >= 85;
 -- ---------------------------------------------------------------------
 -- Задача 5
 
+select  date_trunc('hour', t.ts),round(AVG(t.value), 1)
+from unit u 
+join sensor s on s.unit_id = u.id
+join telemetry t on t.sensor_id = s.id
+where u.id = 'GPA-2' and s.kind = 'temp'
+group by date_trunc('hour', t.ts)
+order by date_trunc;
 
 
 -- ---------------------------------------------------------------------
@@ -84,7 +91,12 @@ having max(t.value ) >= 85;
 -- ---------------------------------------------------------------------
 -- Задача 6
 
-
+select s."name", e.severity, count(e.id)
+from "event" e 
+join unit u on u.id = e.unit_id 
+join station s on s.id = u.station_id 
+group by s."name", e.severity 
+order by name;
 
 -- ---------------------------------------------------------------------
 -- Задача 7. Агрегаты без событий alarm / unplanned_stop
@@ -92,6 +104,15 @@ having max(t.value ) >= 85;
 -- ---------------------------------------------------------------------
 -- Задача 7
 
+select u.id
+from unit u
+where not exists (
+    select 1
+    from event e
+    where e.unit_id = u.id
+      and lower(e.severity) in ('alarm', 'unplanned_stop')
+)
+order by u.id;
 
 
 -- =====================================================================
